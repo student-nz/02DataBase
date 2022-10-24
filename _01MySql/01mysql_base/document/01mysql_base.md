@@ -282,70 +282,6 @@ MySQL8之前，int没有指定(M)，默认显示(11),最多能存储和显示11�
 从MySQL 8.0.17开始，整数数据类型不推荐使用显示宽度属性，默认显示int
 ```
 
-```mysql
-#演示整数类型
-#创建一个表格，表格的名称“t_int”，
-#包含两个字段i1和i2，分别是int和int(2)类型
-#create table t_int(i1 int,i2 int(2));
-create table t_int(
-	i1 int,
-	i2 int(2)  #没有unsigned zerofill，(2)没有意义
-);
-
-#查看当前数据库的所有表格
-show tables;
-show tables from 数据库名;
-
-#查看表结构
-desc 表名称;
-desc t_int;
-
-mysql> desc t_int;
-+-------+------+------+-----+---------+-------+
-| Field | Type | Null | Key | Default | Extra |
-+-------+------+------+-----+---------+-------+
-| i1    | int  | YES  |     | NULL    |       |
-| i2    | int  | YES  |     | NULL    |       |
-+-------+------+------+-----+---------+-------+
-2 rows in set (0.01 sec)
-
-#创建一个表格，表格的名称“t_int2”，
-#包含两个字段i1和i2，分别是int和int(2)类型
-create table t_int2(
-	i1 int,
-	i2 int(2) unsigned zerofill
-);
-
-mysql> desc t_int2;
-+-------+--------------------------+------+-----+---------+-------+
-| Field | Type                     | Null | Key | Default | Extra |
-+-------+--------------------------+------+-----+---------+-------+
-| i1    | int                      | YES  |     | NULL    |       |
-| i2    | int(2) unsigned zerofill | YES  |     | NULL    |       |
-+-------+--------------------------+------+-----+---------+-------+
-2 rows in set (0.01 sec)
-
-#添加数据到表格中
-insert into 表名称 values(值列表);
-insert into t_int values(1234,1234);
-insert into t_int2 values(1234,1234);
-
-#查询数据
-select * from 表名称;
-select * from t_int;
-select * from t_int2;
-
-#添加数据到表格中
-insert into 表名称 values(值列表);
-insert into t_int values(1,1);
-insert into t_int2 values(1,1);
-
-insert into t_int values(12222228854225548778455,12222228854225548778455);
-mysql> insert into t_int values(12222228854225548778455,12222228854225548778455);
-ERROR 1264 (22003): Out of range value for column 'i1' at row 
-
-```
-
 ### 2. bit类型
 
 ```
@@ -357,93 +293,6 @@ bit类型，如果没有指定(M)，默认是1位
 
 对于位类型字段，之前版本直接使用SELECT语句将不会看到结果，
 而在MySQL8版本中默认以“0X”开头的十六进制形式显示，可以通过BIN()函数显示为二进制格式
-```
-
-
-```mysql
-#演示bit类型，存储二进制，只有0和1
-#创建一个表格
-create table t_bit(
-	b1 bit,  #没有指定(M)，默认是1位二进制
-	b2 bit(4) #能够存储4位二进制0000~1111
-);
-
-#查看表结构
-desc t_bit;
-
-mysql> desc t_bit;
-+-------+--------+------+-----+---------+-------+
-| Field | Type   | Null | Key | Default | Extra |
-+-------+--------+------+-----+---------+-------+
-| b1    | bit(1) | YES  |     | NULL    |       |
-| b2    | bit(4) | YES  |     | NULL    |       |
-+-------+--------+------+-----+---------+-------+
-2 rows in set (0.01 sec)
-
-#添加记录
-insert into t_bit values(1,1);
-
-#查看数据
-select * from t_bit;
-
-mysql> select * from t_bit;
-+------------+------------+
-| b1         | b2         |
-+------------+------------+
-| 0x01       | 0x01       |  #0x开头表示十六进制
-+------------+------------+
-1 row in set (0.00 sec)
-
-#显示二进制值，需要使用bin函数
-select bin(b1),bin(b2) from t_bit;
-
-mysql> select bin(b1),bin(b2) from t_bit;
-+---------+---------+
-| bin(b1) | bin(b2) |
-+---------+---------+
-| 1       | 1       |
-+---------+---------+
-1 row in set (0.00 sec)
-
-#添加记录
-insert into t_bit values(2,2);
-
-mysql> insert into t_bit values(2,2); 
-#values()中是十进制值，需要转为二进制存储，2对应10，超过1位，b1存不下
-ERROR 1406 (22001): Data too long for column 'b1' at row 1
-
-#添加记录
-insert into t_bit values(1,8);
-
-#查看数据
-select * from t_bit;
-
-mysql> select * from t_bit;
-+------------+------------+
-| b1         | b2         |
-+------------+------------+
-| 0x01       | 0x01       |
-| 0x01       | 0x08       |
-+------------+------------+
-2 rows in set (0.00 sec)
-
-
-#显示二进制值，需要使用bin函数
-select bin(b1),bin(b2) from t_bit;
-
-mysql> select bin(b1),bin(b2) from t_bit;
-+---------+---------+
-| bin(b1) | bin(b2) |
-+---------+---------+
-| 1       | 1       |
-| 1       | 1000    |
-+---------+---------+
-2 rows in set (0.00 sec)
-
-#添加记录
-insert into t_bit values(1,16); #16的二进制10000
-mysql> insert into t_bit values(1,16);
-ERROR 1406 (22001): Data too long for column 'b2' at row 1
 ```
 
 ### 3. 小数类型
@@ -480,90 +329,6 @@ DECIMAL实际是以字符串形式存放的，在对精度要求比较高的时�
 
 ![image-20211127210358326](assets\image-20211127210358326.png)
 
-```mysql
-#演示小数类型
-#创建表格
-create table t_double(
-	d1 double,
-	d2 double(5,2)  #-999.99~999.99
-);
-
-#查看表结构
-desc t_double;
-
-#添加数据
-insert into t_double values(2.5,2.5);
-
-#查看数据
-select * from t_double;
-mysql> select * from t_double;
-+------+------+
-| d1   | d2   |
-+------+------+
-|  2.5 | 2.50 |#d2字段小数点后不够2位用0补充
-+------+------+
-1 row in set (0.00 sec)
-
-#添加数据
-insert into t_double values(2.5526,2.5526);
-insert into t_double values(2.5586,2.5586);
-
-mysql> select * from t_double;
-+--------+------+
-| d1     | d2   |
-+--------+------+
-|    2.5 | 2.50 |
-| 2.5526 | 2.55 |#小数点后有截断现象，并且会四舍五入
-| 2.5586 | 2.56 |#小数点后有截断现象，并且会四舍五入
-+--------+------+
-3 rows in set (0.00 sec)
-
-
-#添加数据
-insert into t_double values(12852.5526,12852.5526);
-
-#d2字段整数部分超过(5-2=3)位，添加失败
-mysql> insert into t_double values(12852.5526,12852.5526); 
-ERROR 1264 (22003): Out of range value for column 'd2' at row 1
-
-
-#创建表格
-create table t_decimal(
-	d1 decimal,  #没有指定(M,D)默认是(10,0)
-	d2 decimal(5,2)
-);
-
-
-#查看表结构
-desc t_decimal;
-mysql> desc t_decimal;
-+-------+---------------+------+-----+---------+-------+
-| Field | Type          | Null | Key | Default | Extra |
-+-------+---------------+------+-----+---------+-------+
-| d1    | decimal(10,0) | YES  |     | NULL    |       |
-| d2    | decimal(5,2)  | YES  |     | NULL    |       |
-+-------+---------------+------+-----+---------+-------+
-2 rows in set (0.01 sec)
-
-#添加数据
-insert into t_decimal values(2.5,2.5);
-
-#查看数据
-select * from t_decimal;
-mysql> select * from t_decimal;
-+------+------+
-| d1   | d2   |
-+------+------+
-|    3 | 2.50 |  #d1字段小数点后截断
-+------+------+
-1 row in set (0.00 sec)
-
-insert into t_decimal values(12852.5526,12852.5526);
-
-把小数赋值给整数类型的字段时，会截断小数部分，考虑四舍五入
-insert into t_int2 values(1.5,1.5);
-```
-
 ## 2. 字符串类型
 
 ```
@@ -590,22 +355,6 @@ CHAR(M)为固定长度的字符串， M表示最多能存储的字符数，取�
 	如果存储的值少于4个字符，右侧将用空格填充以达到指定的长度，当查询显示CHAR值时，尾部的空格将被删掉。
 ```
 
-```mysql
-create table temp(
-	c1 char,
-    c2 char(3)
-);
-```
-
-```mysql
-insert into temp values('男','女');#成功
-
-insert into temp values('政政政','政政政');#失败
-ERROR 1406 (22001): Data too long for column 'c1' at row 1
-
-insert into temp values('男','政政政');#成功
-```
-
 ```
 VARCHAR(M)为可变长度的字符串，M表示最多能存储的字符数，M的范围由最长的行的大小（通常是65535）和使用的字符集确定
 
@@ -613,35 +362,6 @@ VARCHAR(M)为可变长度的字符串，M表示最多能存储的字符数，M�
 	utf8mb4字符编码单个字符所需最长字节值为4个字节，所以M的范围是[0, 16383]
 	而VARCHAR类型的字段实际占用的空间为字符串的实际长度加1或2个字节，这1或2个字节用于描述字符串值的实际字节数，
 	即字符串值在[0,255]个字节范围内，那么额外增加1个字节，否则需要额外增加2个字节
-```
-
-```mysql
-create table temp(
-	name varchar  #错误
-);
-```
-
-```mysql
-create table temp(
-	name varchar(3)  #最多不超过3个字符
-);
-```
-
-```mysql
-insert into temp values('政哥');
-
-insert into temp values('政哥真好');#ERROR 1406 (22001): Data too long for column 'name' at row 1
-
-insert into temp values('好');
-```
-
-```mysql
-drop table temp;
-create table temp(
-	name varchar(65535)
-);
-#ERROR 1074 (42000): Column length too big for column 'name' (max = 21845); use BLOB or TEXT instead
-因为当前的表是UTF8，一个汉字占3个字节
 ```
 
 ![image-20211127210826463](assets\image-20211127210826463.png)
@@ -690,141 +410,6 @@ SET值在内部也用整数表示，分别是1，2，4，8……，都是2的n�
 
 ![image-20211127211806889](assets/image-20211127211806889.png)
 
-演示枚举类型：
-
-```mysql
-create table temp(
-	gender enum('男','女'),
-    hobby set('睡觉','打游戏','泡妞','写代码')
-);
-```
-
-```mysql
-insert into temp values('男','睡觉,打游戏'); #成功
-
-insert into temp values('男,女','睡觉,打游戏'); #失败
-#ERROR 1265 (01000): Data truncated for column 'gender' at row 1
-
-insert into temp values('妖','睡觉,打游戏');#失败
-ERROR 1265 (01000): Data truncated for column 'gender' at row 1
-
-insert into temp values('男','睡觉,打游戏,吃饭');
-ERROR 1265 (01000): Data truncated for column 'hobby' at row 1
-```
-
-```mysql
-#文本类型中的枚举和集合
-#枚举：固定的几个字符串值，从中选择一个
-#集合：固定的几个字符串值，从中选择任意几个
-
-create table t_enum_set(
-	gender enum('男','女'),
-	hobby set('游戏','睡觉','打代码','运动')
-);
-
-#查看表结构
-desc t_enum_set;
-
-mysql> desc t_enum_set;
-+--------+------------------------------------+------+-----+---------+-------+
-| Field  | Type                               | Null | Key | Default | Extra |
-+--------+------------------------------------+------+-----+---------+-------+
-| gender | enum('男','女')                    | YES  |     | NULL    |       |
-| hobby  | set('游戏','睡觉','打代码','运动') | YES  |     | NULL    |       |
-+--------+------------------------------------+------+-----+---------+-------+
-2 rows in set (0.01 sec)
-
-
-#添加数据
-insert into t_enum_set
-values('男','游戏');
-
-#查看数据
-select * from t_enum_set;
-
-#添加数据
-insert into t_enum_set
-values('男,女','游戏,睡觉');
-
-mysql> insert into t_enum_set
-    -> values('男,女','游戏,睡觉');
-ERROR 1265 (01000): Data truncated for column 'gender' at row 1
-
-#添加数据
-insert into t_enum_set
-values('男','游戏,睡觉');
-
-#添加数据
-insert into t_enum_set
-values('妖','游戏,睡觉');
-mysql> insert into t_enum_set
-    -> values('妖','游戏,睡觉');
-ERROR 1265 (01000): Data truncated for column 'gender' at row 1
-
-#添加数据
-insert into t_enum_set
-values('男','游戏,睡觉,做饭');
-mysql> insert into t_enum_set
-    -> values('男','游戏,睡觉,做饭');
-ERROR 1265 (01000): Data truncated for column 'hobby' at row 1
-
-
-insert into t_enum_set
-values(2, 2);
-
-mysql> select * from t_enum_set;
-+--------+-----------+
-| gender | hobby     |
-+--------+-----------+
-| 男     | 游戏      |
-| 男     | 游戏,睡觉 |
-| 女     | 睡觉      |
-+--------+-----------+
-3 rows in set (0.00 sec)
-
-
-insert into t_enum_set
-values(2, 5);
-#5 可以看出 1和4的组合，00001 和 0100，0101
-
-
-insert into t_enum_set
-values(2, 7);
-mysql> select * from t_enum_set;
-+--------+------------------+
-| gender | hobby            |
-+--------+------------------+
-| 男     | 游戏             |
-| 男     | 游戏,睡觉        |
-| 女     | 睡觉             |
-| 女     | 游戏,打代码      |
-| 女     | 游戏,睡觉,打代码 |
-+--------+------------------+
-5 rows in set (0.00 sec)
-
-insert into t_enum_set
-values(2, 15);
-mysql> select * from t_enum_set;
-+--------+-----------------------+
-| gender | hobby                 |
-+--------+-----------------------+
-| 男     | 游戏                  |
-| 男     | 游戏,睡觉             |
-| 女     | 睡觉                  |
-| 女     | 游戏,打代码           |
-| 女     | 游戏,睡觉,打代码      |
-| 女     | 游戏,睡觉,打代码,运动 |
-+--------+-----------------------+
-6 rows in set (0.00 sec)
-
-
-insert into t_enum_set
-values(2, 25);
-mysql> insert into t_enum_set
-    -> values(2, 25);
-ERROR 1265 (01000): Data truncated for column 'hobby' at row 1
-```
-
 ### 3. BINARY和VARBINARY类型
 
 ```
@@ -840,88 +425,6 @@ VARBINARY (M)为可变长度的二进制字符串，M表示最多能存储的字
 VARBINARY类型和VARCHAR类型一样必须指定(M)，否则报错
 ```
 
-```mysql
-#演示二进制字符串类型binary和varbinary
-#创建表格
-create table t_binary(
-	b1 binary, #没有指定(M)，默认是(1)
-	b2 varbinary #没有指定(M)，报错，必须指定(M)
-);
-ERROR 1064 (42000): You have an error in your SQL syntax; 
-check the manual that corresponds to your MySQL server 
-version for the right syntax to use near ')' at line 4
-
-
-create table t_binary(
-	b1 binary, #默认(1)，最多能存储一个字节
-	b2 binary(6), #最多能存储6个字节，不够6个用\u0000补全
-	b3 varbinary(6) #(6)，最多能存储6个字节
-);
-
-#查看表结构
-desc t_binary;
-
-mysql> desc t_binary;
-+-------+--------------+------+-----+---------+-------+
-| Field | Type         | Null | Key | Default | Extra |
-+-------+--------------+------+-----+---------+-------+
-| b1    | binary(1)    | YES  |     | NULL    |       |
-| b2    | binary(6)    | YES  |     | NULL    |       |
-| b3    | varbinary(6) | YES  |     | NULL    |       |
-+-------+--------------+------+-----+---------+-------+
-3 rows in set (0.01 sec)
-
-
-#添加数据
-insert into t_binary
-values('a','a','a');
-
-#查看数据
-select * from t_binary;
-#显示16进制形式的值
-
-mysql> select * from t_binary;
-+------------+----------------+------------+
-| b1         | b2             | b3         |
-+------------+----------------+------------+
-| 0x61       | 0x610000000000 | 0x61       |
-+------------+----------------+------------+
-1 row in set (0.00 sec)
-
-#'a'的编码值是97（十进制），对应十六进制（61）
-#0x610000000000 补够6个字节
-
-#添加数据
-insert into t_binary
-values('尚','尚','尚');
-
-mysql> insert into t_binary
-    -> values('尚','尚','尚');
-ERROR 1406 (22001): Data too long for column 'b1' at row 1
-#'尚'无论在GBK还是UTF8编码下都不可能是1个字节
-
-#添加数据
-insert into t_binary
-values('a','尚硅谷','尚硅谷');
-
-mysql> select * from t_binary;
-+------------+----------------+----------------+
-| b1         | b2             | b3             |
-+------------+----------------+----------------+
-| 0x61       | 0x610000000000 | 0x61           |
-| 0x61       | 0xC9D0B9E8B9C8 | 0xC9D0B9E8B9C8 |  #此时客户端是GBK，尚硅谷编码为6个字节
-+------------+----------------+----------------+
-2 rows in set (0.00 sec)
-
-#添加数据
-insert into t_binary
-values('a','尚硅谷真好','尚硅谷尚硅谷真好');
-
-mysql> insert into t_binary
-    -> values('a','尚硅谷真好','尚硅谷尚硅谷真好');
-ERROR 1406 (22001): Data too long for column 'b2' at row 1
-```
-
 ### 4. 二进制字符串和文本字符串
 
 ```
@@ -933,7 +436,7 @@ ERROR 1406 (22001): Data too long for column 'b2' at row 1
 ```
 
 
-（1）此时在sqlyog客户端查看“t_binary”的数据，发现乱码。
+（1）此时在sqlyog客户端查看“t_binary”的数据，发现乱码
 
 ![image-20221023231936155](assets\image-20221023231936155.png)
 
@@ -973,68 +476,6 @@ insert into t_binary
 values('a','尚硅','尚硅');
 ```
 
-在命令行查看数据，两条“尚硅”记录值不一样。
-
-```mysql
-mysql> select * from t_binary;
-+------------+----------------+----------------+
-| b1         | b2             | b3             |
-+------------+----------------+----------------+
-| 0x61       | 0x610000000000 | 0x61           |
-| 0x61       | 0xC9D0B9E8B9C8 | 0xC9D0B9E8B9C8 |
-| 0x61       | 0xE5B09AE7A185 | 0xE5B09AE7A185 |   #可视化工具中添加的，基于UTF8的  尚硅
-| 0x61       | 0xC9D0B9E80000 | 0xC9D0B9E8     |   #命令行添加的，基于GBK   尚硅
-+------------+----------------+----------------+
-4 rows in set (0.00 sec)
-```
-
-（3）分别在t_char表和t_bianary表查询  查询'a'的记录
-
-```java
-#查询表中b1字段值为'a'的记录
-select * from t_binary where b1 = 'a';
-
-#查询表中b1字段值为'A'的记录
-select * from t_binary where b1 = 'A';
-
-mysql> select * from t_binary where b1 = 'a';
-+------------+----------------+----------------+
-| b1         | b2             | b3             |
-+------------+----------------+----------------+
-| 0x61       | 0x610000000000 | 0x61           |
-| 0x61       | 0xC9D0B9E8B9C8 | 0xC9D0B9E8B9C8 |
-| 0x61       | 0xE5B09AE7A185 | 0xE5B09AE7A185 |
-| 0x61       | 0xC9D0B9E80000 | 0xC9D0B9E8     |
-+------------+----------------+----------------+
-4 rows in set (0.00 sec)
-
-mysql> select * from t_binary where b1 = 'A';
-
-
-#在char和varchar类型的表格中查询
-#查询表中c1字段值为'a'的记录
-select * from t_char where c1 = 'a';
-
-#查询表中c1字段值为'A'的记录
-select * from t_char where c1 = 'A';
-
-mysql> select * from t_char where c1 = 'a';
-+------+------+------+
-| c1   | c2   | c3   |
-+------+------+------+
-| a    | a    | a    |
-+------+------+------+
-1 row in set (0.00 sec)
-
-mysql> select * from t_char where c1 = 'A';
-+------+------+------+
-| c1   | c2   | c3   |
-+------+------+------+
-| a    | a    | a    |
-+------+------+------+
-1 row in set (0.00 sec)
-```
-
 ### 5. BLOB和TEXT类型
 
 ```
@@ -1047,47 +488,6 @@ BLOB类型与TEXT类型的区别如下：
 （1）BLOB类型存储的是二进制字符串，TEXT类型存储的是文本字符串。BLOB类型还可以存储图片和声音等二进制数据。
 
 （2）BLOB类型没有字符集，并且排序和比较基于列值字节的数值，TEXT类型有一个字符集，并且根据字符集对值进行排序和比较
-```
-
-```mysql
-#演示blob和text
-#blob系列是大的二进制数据类型
-#text系列是大的文本字符串类型
-#创建表格
-create table t_blob_text(
-	b blob,
-	t text
-);
-
-#查看表结构
-desc t_blob_text;
-mysql> desc t_blob_text;
-+-------+------+------+-----+---------+-------+
-| Field | Type | Null | Key | Default | Extra |
-+-------+------+------+-----+---------+-------+
-| b     | blob | YES  |     | NULL    |       |
-| t     | text | YES  |     | NULL    |       |
-+-------+------+------+-----+---------+-------+
-2 rows in set (0.01 sec)
-
-#添加数据
-insert into t_blob_text
-values('a','a');
-
-insert into t_blob_text
-values('尚硅谷','尚硅谷');
-
-#查看数据
-select * from t_blob_text;
-
-mysql> select * from t_blob_text;
-+----------------+--------+
-| b              | t      |
-+----------------+--------+
-| 0x61           | a      |
-| 0xC9D0B9E8B9C8 | 尚硅谷 |
-+----------------+--------+
-2 rows in set (0.00 sec)
 ```
 
 BLOB类型的数据支持存储图片等数据。存储图片等数据需要借助图形界面工具来实现，下面以SQLyog图形界面工具为例演示操作步骤。
@@ -1140,62 +540,6 @@ TIMESTAMP与DATETIME的区别在于TIMESTAMP的取值范围小，只支持1970-0
 
 而DATETIME则只能反映出插入时当地的时区，其他时区的人查看数据必然会有误差的。
 另外，TIMESTAMP的属性受MySQL版本和服务器SQLMode的影响很大。
-```
-
-```mysql
-create table temp(
-	d1 datetime,
-	d2 timestamp
-);
-```
-
-```mysql
-insert into temp values('2021-9-2 14:45:52','2021-9-2 14:45:52');
-```
-
-```mysql
-#修改当前的时区
-set time_zone = '+9:00';
-```
-
-```mysql
-insert into temp values('202192144552','202192144552');
-#ERROR 1292 (22007): Incorrect datetime value: '202192144552' for column 'd1' at row 1
-```
-
-```mysql
-insert into temp values('20210902144552','20210902144552');
-```
-
-```mysql
-insert into temp values('2021&9&2 14%45%52','2021#9#2 14@45@52');
-```
-
-```mysql
-create table temp(
-	d year
-);
-```
-
-```mysql
-insert into temp values(2021);
-insert into temp values(85);
-insert into temp values(22);
-insert into temp values(69);
-insert into temp values(0);
-insert into temp values('0');
-```
-
-```mysql
-mysql> select * from temp;
-+------+
-| d    |
-+------+
-| 2021 |
-| 1985 |
-| 2022 |
-+------+
-3 rows in set (0.00 sec)
 ```
 
 ## 4. 其他类型
