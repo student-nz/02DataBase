@@ -3327,7 +3327,7 @@ select @@transaction_isolation;
 | repeatable-read  | 确保事务可以多次从一个字段中读取相同的值。在这个事务持续期间，禁止其他事务对这个字段进行更新。可以避免脏读和不可重复读。但是幻读问题仍然存在。注意：mysql中使用了MVCC多版本控制技术，在这个级别也可以避免幻读。 |
 | serializable     | 确保事务可以从一个表中读取相同的行，相同的记录。在这个事务持续期间，禁止其他事务对该表执行插入、更新、删除操作。所有并发问题都可以避免，但性能十分低下。 |
 
-Oracle 支持的 2 种事务隔离级别：READ-COMMITED, SERIALIZABLE，Oracle 默认的事务隔离级别为: READ COMMITED 。
+Oracle 支持的 2 种事务隔离级别：READ-COMMITED, SERIALIZABLE，Oracle 默认的事务隔离级别为: READ COMMITED 
 
 Mysql 支持 4 种事务隔离级别，Mysql 默认的事务隔离级别为: REPEATABLE-READ
 
