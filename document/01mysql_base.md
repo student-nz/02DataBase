@@ -2,13 +2,13 @@
 
 # 1. 数据库相关概念
 
-## 1）数据库是什么？
+## 1.1 数据库是什么？
 
 ​				存储数据的地方
 
 ​				DB：数据库（Database）
 
-## 2）为什么要用数据库？
+## 1.2 为什么要用数据库？
 
 ​			1. 前面我们都是使用数组和集合容器进行存储数据，但是都是内存中操作数据的，弊端是什么？
 
@@ -18,17 +18,17 @@
 
 ​					把数据写入到硬盘上的文件中，可以实现持久化存储数据，但是不利于后期的检索和管理等
 
-## 3）MySQL、Oracle、SqlServer是什么？
+## 1.3 MySQL、Oracle、SqlServer是什么？
 
 ​				MySQL、Oracle、SqlServer都是数据库管理系统（DBMS，Database Management System）
 
 ​				是一种操纵和管理数据库的大型软件，例如建立、使用和维护数据库。
 
-## 4）相关图
+## 1.4 相关图
 
 ![image-20221022164732326](assets\image-20221022164732326.png)
 
-![image-20221022164825973](D:\yjxz\Review_outline\yjxz\background\_02DataBase\_01MySql\01mysql_base\document\assets\image-20221022164825973.png)
+![image-20221022164825973](assets\image-20221022164825973.png)
 
 # 2. 数据库管理系统
 
@@ -92,11 +92,11 @@
 
 ​		针对不同用户，MySQL提供三个不同的版本。
 
-​			1）MySQL Enterprise Server（企业版）：
+​			1. MySQL Enterprise Server（企业版）：
 
 ​				能够以更高的性价比为企业提供数据仓库应用，该版本需要付费使用，官方提供电话技术支持。	
 
-​			2）MySQL Cluster（集群版）：
+​			2. MySQL Cluster（集群版）：
 
 ​				MySQL 集群是 MySQL 适合于分布式计算环境的高可用、高冗余版本
 
@@ -104,7 +104,7 @@
 
 ​				它不能单独使用，需要在社区版或企业版基础上使用
 
-​			3）MySQL Community Server（社区版）：
+​			3. MySQL Community Server（社区版）：
 
 ​					在开源GPL许可证之下可以自由的使用。该版本完全免费，但是官方不提供技术支持
 
